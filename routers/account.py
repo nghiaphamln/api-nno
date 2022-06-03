@@ -1,6 +1,6 @@
 import os
 from typing import Union, Any
-from fastapi import APIRouter, Depends, Response, status, HTTPException
+from fastapi import APIRouter, Depends, Response, HTTPException
 from fastapi.security import HTTPBearer
 from sql_app.database import get_database
 from sqlalchemy.orm import Session
@@ -42,7 +42,7 @@ def validate_token(http_authorization_credentials=Depends(reusable_oauth2)) -> s
                 status_code=403,
                 detail='Token đã hết hạn.'
             )
-        return payload.get('username')
+        pass
     except (jwt.PyJWTError, ValidationError):
         raise HTTPException(
             status_code=403,
@@ -56,7 +56,7 @@ async def root():
 
 
 @router.post('/Register')
-async def register(account: account_schema.UserSchema, response: Response, database: Session = Depends(get_database)):
+async def register(account: account_schema.UserSchema, database: Session = Depends(get_database)):
     if account_crud.create_account(database, account):
         return {'detail': 'Đã đăng ký tài khoản thành công.'}
     else:

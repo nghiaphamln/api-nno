@@ -8,3 +8,4 @@ class Users(Base):
     username = Column(String(32), unique=True, index=True)
     password = Column(String(64))
     fullname = Column(String(64))
+    isdeteled = Column(Boolean, default=False)

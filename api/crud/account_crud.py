@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from schemas import account_schema
 from sql_app import models
+import bcrypt
 
 
 def create_account(database: Session, account: account_schema.UserSchema):
@@ -9,7 +10,7 @@ def create_account(database: Session, account: account_schema.UserSchema):
     database.add(
         models.Users(
             username=account.username,
-            password=account.password,
+            password=bcrypt.hashpw(str.encode(account.password), bcrypt.gensalt(14)),
             fullname=account.fullname
         )
     )

@@ -13,4 +13,4 @@ app.include_router(account.router)
 
 @app.get('/')
 async def root():
-    return {'message': 'API Code By NghiaPH.'}
+    return {'detail': 'API Code By NghiaPH.'}

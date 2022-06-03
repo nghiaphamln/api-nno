@@ -9,7 +9,7 @@ router = APIRouter(
 
 @router.get('/')
 async def root():
-    return {'message': 'Root of Address Router!'}
+    return {'message': 'Root of Address Router.'}
 
 
 @router.get('/GetIP')

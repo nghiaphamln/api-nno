@@ -1,6 +1,6 @@
 import os
 from typing import Union, Any
-from fastapi import APIRouter, Depends, Response, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import HTTPBearer
 from sql_app.database import get_database
 from sqlalchemy.orm import Session
@@ -28,7 +28,7 @@ def generate_token(username: Union[str, Any]) -> str:
         seconds=60 * 60 * 24 * 3  # Expired after 3 days
     )
     to_encode = {
-        "exp": expire, "username": username
+        'exp': expire, 'username': username
     }
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=SECURITY_ALGORITHM)
     return encoded_jwt
@@ -42,7 +42,7 @@ def validate_token(http_authorization_credentials=Depends(reusable_oauth2)) -> s
                 status_code=403,
                 detail='Token đã hết hạn.'
             )
-        pass
+        return payload.get('username')
     except (jwt.PyJWTError, ValidationError):
         raise HTTPException(
             status_code=403,
@@ -75,3 +75,8 @@ async def login(accout: account_schema.LoginRequest, database: Session = Depends
             status_code=401,
             detail='Tài khoản hoặc mật khẩu không chính xác.'
         )
+
+
+@router.get('/GetUserInfo', dependencies=[Depends(validate_token)])
+async def get_user_info(username: str = Depends(validate_token), database: Session = Depends(get_database)):
+    return account_crud.get_user_information(database, username)

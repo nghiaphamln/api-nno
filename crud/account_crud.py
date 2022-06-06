@@ -27,3 +27,17 @@ def login(database: Session, account: account_schema.LoginRequest):
         return False
     else:
         return True
+
+
+def get_user_information(database: Session, username: str):
+    user = database.query(models.User).filter_by(username=username, deleted=0).first()
+    if user is None:
+        return False
+    else:
+        return {
+            'id': user.id,
+            'username': user.username,
+            'password': user.password,
+            'fullname': user.fullname,
+            'deleted': user.deleted
+        }
